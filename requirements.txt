@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+pymongo
+selenium
+webdriver_manager
+tqdm
+lancedb
+pandas
