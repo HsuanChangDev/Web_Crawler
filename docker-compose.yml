@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  webcrawler:
+    image: webcrawler
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/app
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    shm_size: "6gb" # used during the run
+    command: ["python", "/app/src/scrapers/OBDesignScraper.py"]
+    depends_on:
+      - mongo
+      - selenium
+
+  mongo:
+    image: mongo:4.4
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+    shm_size: '2gb'
+  
+volumes:
+  mongo-data:
